@@ -15,7 +15,6 @@
 </head>
 <body>
   <div id="root"></div>
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <script>
     const { useState, useEffect } = React;
     const { createRoot } = ReactDOM;
@@ -25,40 +24,117 @@
       const [showInstallPrompt, setShowInstallPrompt] = useState(false);
       const [showInstructions, setShowInstructions] = useState(false);
 
-      useEffect(() => {
+      useEffect(function() {
         const hasSeenPrompt = localStorage.getItem('hasSeenInstallPrompt');
         if (!hasSeenPrompt) {
-          setTimeout(() => setShowInstallPrompt(true), 3000);
+          setTimeout(function() {
+            setShowInstallPrompt(true);
+          }, 3000);
         }
       }, []);
 
-      const handlePowerPress = () => {
+      function handlePowerPress() {
         window.location.href = 'http://' + amplifierIP;
-      };
+      }
 
-      return React.createElement('div', { className: 'min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white font-sans' },
-        showInstallPrompt && React.createElement('div', { className: 'fixed bottom-5 left-1/2 transform -translate-x-1/2 z-50 max-w-sm w-11/12' },
-          React.createElement('div', { className: 'bg-gradient-to-br from-blue-500 to-blue-600 p-4 rounded-2xl shadow-2xl' },
+      function dismissInstall() {
+        setShowInstallPrompt(false);
+        localStorage.setItem('hasSeenInstallPrompt', 'true');
+      }
+
+      function showIOSInstructions() {
+        setShowInstallPrompt(false);
+        setShowInstructions(true);
+        localStorage.setItem('hasSeenInstallPrompt', 'true');
+      }
+
+      function closeInstructions() {
+        setShowInstructions(false);
+      }
+
+      return React.createElement('div', { 
+        className: 'min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white font-sans' 
+      },
+        showInstallPrompt && React.createElement('div', { 
+          className: 'fixed bottom-5 left-1/2 z-50 max-w-sm w-11/12',
+          style: { transform: 'translateX(-50%)' }
+        },
+          React.createElement('div', { 
+            className: 'bg-gradient-to-br from-blue-500 to-blue-600 p-4 rounded-2xl shadow-2xl' 
+          },
             React.createElement('p', { className: 'text-white font-semibold mb-2' }, 'Install MRX Control'),
-            React.createElement('p', { className: 'text-white/90 text-sm mb-3' }, 'Add to your home screen for quick access'),
+            React.createElement('p', { className: 'text-white text-sm mb-3', style: { opacity: 0.9 } }, 'Add to your home screen for quick access'),
             React.createElement('div', { className: 'flex gap-2' },
               React.createElement('button', {
-                onClick: () => { setShowInstallPrompt(false); localStorage.setItem('hasSeenInstallPrompt', 'true'); },
-                className: 'flex-1 py-2 px-4 bg-white/20 text-white rounded-lg font-medium'
+                onClick: dismissInstall,
+                className: 'flex-1 py-2 px-4 rounded-lg font-medium text-white',
+                style: { backgroundColor: 'rgba(255, 255, 255, 0.2)' }
               }, 'Later'),
               React.createElement('button', {
-                onClick: () => { setShowInstallPrompt(false); setShowInstructions(true); localStorage.setItem('hasSeenInstallPrompt', 'true'); },
+                onClick: showIOSInstructions,
                 className: 'flex-1 py-2 px-4 bg-white text-blue-600 rounded-lg font-semibold'
               }, 'Install')
             )
           )
         ),
 
-        showInstructions && React.createElement('div', { className: 'fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-5' },
-          React.createElement('div', { className: 'bg-white rounded-2xl p-6 max-w-md w-full' },
+        showInstructions && React.createElement('div', { 
+          className: 'fixed inset-0 z-50 flex items-center justify-center p-5',
+          style: { backgroundColor: 'rgba(0, 0, 0, 0.8)' }
+        },
+          React.createElement('div', { 
+            className: 'bg-white rounded-2xl p-6 max-w-md w-full' 
+          },
             React.createElement('h3', { className: 'text-slate-900 text-xl font-bold mb-4' }, 'Install on iPhone'),
-            React.createElement('ol', { className: 'text-slate-700 space-y-3 mb-6 pl-5 list-decimal' },
-              React.createElement('li', null, 'Tap the Share button at the bottom of Safari'),
-              React.createElement('li', null, 'Scroll down and tap "Add to Home Screen"'),
-              React.createElement('li', null, 'Tap "Add" in the top right'),
-              React.createElement('li', null,
+            React.createElement('ol', { className: 'text-slate-700 mb-6 pl-5', style: { lineHeight: '1.8', listStyleType: 'decimal' } },
+              React.createElement('li', { style: { marginBottom: '12px' } }, 'Tap the Share button at the bottom of Safari'),
+              React.createElement('li', { style: { marginBottom: '12px' } }, 'Scroll down and tap "Add to Home Screen"'),
+              React.createElement('li', { style: { marginBottom: '12px' } }, 'Tap "Add" in the top right'),
+              React.createElement('li', null, 'Find the MRX Control app icon on your home screen')
+            ),
+            React.createElement('button', {
+              onClick: closeInstructions,
+              className: 'w-full py-3 bg-blue-500 text-white rounded-xl font-semibold'
+            }, 'Got it!')
+          )
+        ),
+
+        React.createElement('div', { 
+          className: 'flex flex-col items-center justify-center p-6',
+          style: { minHeight: '100vh' }
+        },
+          React.createElement('div', { className: 'text-center mb-12' },
+            React.createElement('h1', { className: 'text-4xl font-bold mb-3' }, 'Anthem MRX 740'),
+            React.createElement('p', { className: 'text-gray-400 text-lg' }, 'Home Theater Control')
+          ),
+
+          React.createElement('div', { className: 'text-center' },
+            React.createElement('button', {
+              onClick: handlePowerPress,
+              className: 'w-32 h-32 rounded-full flex items-center justify-center transition-all duration-300 bg-gradient-to-br from-blue-500 to-blue-600 mb-6',
+              style: { boxShadow: '0 20px 60px rgba(59, 130, 246, 0.5)' }
+            }, 
+              React.createElement('span', { style: { fontSize: '64px', lineHeight: '1' } }, '⏻')
+            ),
+            React.createElement('p', { className: 'text-gray-300 text-lg mb-2' }, 'Press to Control'),
+            React.createElement('p', { className: 'text-gray-500 text-sm max-w-xs mx-auto' }, 'Tap the power button to access your amplifier control interface')
+          ),
+
+          React.createElement('div', { className: 'mt-12 text-center' },
+            React.createElement('p', { className: 'text-gray-600 text-xs' }, 'Connected to: ' + amplifierIP)
+          )
+        )
+      );
+    }
+
+    const root = createRoot(document.getElementById('root'));
+    root.render(React.createElement(AnthemControl));
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js')
+        .then(function() { console.log('SW registered'); })
+        .catch(function(err) { console.log('SW failed:', err); });
+    }
+  </script>
+</body>
+</html>
