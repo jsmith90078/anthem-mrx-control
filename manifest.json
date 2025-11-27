@@ -2,7 +2,7 @@
   "name": "Anthem MRX 740 Control",
   "short_name": "MRX Control",
   "description": "Control your Anthem MRX 740 home theater amplifier",
-  "start_url": "/",
+  "start_url": "/anthem-mrx-control",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#0f172a",
